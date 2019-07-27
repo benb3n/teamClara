@@ -146,8 +146,8 @@ public class DemoController {
 		System.out.println("getEventFeedback/"+eventId);
 		try {
 			initDatabase();
-
-
+			
+			
 			result = resultSetToJson(con, sqlStmt);
             System.out.println("Pulled data:\n "+result);
 			if (result != null)
