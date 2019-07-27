@@ -16,6 +16,7 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -81,9 +82,9 @@ public class DemoController {
 		return result; 
 	}
 	
-	@RequestMapping("/getUserEvents/{userId}")
+	@RequestMapping("/getUserEvents")
 	@CrossOrigin(origins ="*")
-	String getEventUser(@PathVariable("userId") String userId) {	
+	String getEventUser(@RequestParam("userId") String userId) {
 		String sqlStmt = "	SELECT t1.eventId,organiserId,TIMESTAMPDIFF(hour,t1.startTime,t1.endTime) AS 'Duration'\n" + 
 				"	FROM report.Events t1\n" + 
 				"	JOIN report.EventRegistrations t2\n" + 
@@ -108,9 +109,9 @@ public class DemoController {
 	}
 	
 
-	@RequestMapping("/getEventUsers/{eventId}")
+	@RequestMapping("/getEventUsers")
 	@CrossOrigin(origins ="*")
-	String getEventUsers(@PathVariable("eventId") String eventId) {
+	String getEventUsers(@RequestParam("eventId") String eventId) {
 		String sqlStmt = "SELECT t3.nationality, t3.gender, t3.birthDate, t3.region\n" + 
 				"	FROM report.Events t1\n" + 
 				"	JOIN report.EventRegistrations t2 ON t1.eventId=t2.eventId\n" + 
@@ -135,9 +136,9 @@ public class DemoController {
 	}
 	
 	
-	@RequestMapping("/getEventFeedback/{eventId}")
+	@RequestMapping("/getEventFeedback")
 	@CrossOrigin(origins ="*")
-	String getEventFeedback(@PathVariable("eventId") String eventId) {
+	String getEventFeedback(@RequestParam("eventId") String eventId) {
 		String sqlStmt = "SELECT userId, status, feedback\n" + 
 				"FROM report.EventRegistrations t1\n" + 
 				"WHERE t1.eventId="+eventId;
@@ -160,9 +161,9 @@ public class DemoController {
 	}
 
 	
-	@RequestMapping("/getOrgEvents/{organisationId}")
+	@RequestMapping("/getOrgEvents")
 	@CrossOrigin(origins ="*")
-	String getOrganisationEvents(@PathVariable("organisationId") String organisationId) {
+	String getOrganisationEvents(@RequestParam("organisationId") String organisationId) {
 		String sqlStmt = "SELECT t2.orgName, t2.orgId, t1.eventName, \n" + 
 				"t1.eventDesc, t1.signupCount, t1.status, t1.startTime, t1.endTime\n" + 
 				"FROM report.Events t1\n" + 
