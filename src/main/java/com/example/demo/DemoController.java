@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -79,7 +80,56 @@ public class DemoController {
 		return result; 
 	}
 	
+	@RequestMapping("/getUserEvent")
+	String getUserEvent() {
+		String sqlStmt = "Select * from Events";
+		String result = null;
+		System.out.println("starting");
+		try {
+			initDatabase();
+			System.out.println("Pulled data");
+
+			result = resultSetToJson(con, sqlStmt);
+
+			if (result != null)
+				return result;
+
+			con.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return result; 
+	}
 	
+	@RequestMapping("/getUserEvent/{userId}")
+	
+	String getEventUser(@PathVariable("userId") String userId) {
+		
+		
+		String sqlStmt = "	SELECT t1.eventId,organiserId,TIMESTAMPDIFF(hour,t1.startTime,t1.endTime) AS 'Duration'\n" + 
+				"	FROM report.Events t1\n" + 
+				"	JOIN report.EventRegistrations t2\n" + 
+				"	ON t1.eventId = t2.eventId\n" + 
+				"	WHERE t2.userId="+userId;
+		String result = null;
+		System.out.println("starting");
+		try {
+			initDatabase();
+			System.out.println("Pulled data");
+
+			result = resultSetToJson(con, sqlStmt);
+
+			if (result != null)
+				return result;
+
+			con.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return result; 
+	}
+	
+
 	
 	
 	public static String resultSetToJson(Connection connection, String query) {
