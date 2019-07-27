@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +46,7 @@ public class DemoController {
 	String getAccount() {
 		String result =null;
 		String sqlStmt = "Select * From Accounts";
+        System.out.print(new Date().getTime());
 		System.out.println("getAllAccount");
 		try {
 			initDatabase();
@@ -66,6 +68,7 @@ public class DemoController {
 	String getEvent() {
 		String sqlStmt = "Select * from Events";
 		String result = null;
+        System.out.print(new Date().getTime());
 		System.out.println("GetEvent");
 		try {
 			initDatabase();
@@ -91,6 +94,7 @@ public class DemoController {
 				"	ON t1.eventId = t2.eventId\n" + 
 				"	WHERE t2.userId="+userId;
 		String result = null;
+        System.out.print(new Date().getTime());
 		System.out.println("getUserEvents/"+userId);
 		try {
 			initDatabase();
@@ -118,6 +122,7 @@ public class DemoController {
 				"	JOIN report.Accounts t3 ON t2.userId=t3.userId\n" + 
 				"	WHERE t1.eventId="+eventId;
 		String result = null;
+        System.out.print(new Date().getTime());
 		System.out.println("getEventUsers/"+eventId);
 		try {
 			initDatabase();
@@ -143,6 +148,7 @@ public class DemoController {
 				"FROM report.EventRegistrations t1\n" + 
 				"WHERE t1.eventId="+eventId;
 		String result = null;
+		System.out.print(new Date().getTime());
 		System.out.println("getEventFeedback/"+eventId);
 		try {
 			initDatabase();
@@ -171,6 +177,7 @@ public class DemoController {
 				"ON t1.organiserId=t2.orgId\n" + 
 				"WHERE t1.organiserId="+organisationId;
 		String result = null;
+        System.out.print(new Date().getTime());
 		System.out.println("getOrgEvents/"+organisationId);
 		try {
 			initDatabase();
