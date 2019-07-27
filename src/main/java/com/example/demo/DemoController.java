@@ -84,15 +84,30 @@ public class DemoController {
 	
 	@RequestMapping("/getUserEvents")
 	@CrossOrigin(origins ="*")
-	String getEventUser(@RequestParam("userId") String userId) {
+	String getEventUser(@RequestParam("userId") String userId, @RequestParam(value = "startDate", required=false) String startDate,
+			@RequestParam(value = "endDate", required=false) String endDate) {
 		String sqlStmt = "	SELECT t1.eventId,organiserId,TIMESTAMPDIFF(hour,t1.startTime,t1.endTime) AS 'Duration'\n" + 
 				"	FROM report.Events t1\n" + 
 				"	JOIN report.EventRegistrations t2\n" + 
 				"	ON t1.eventId = t2.eventId\n" + 
 				"	WHERE t2.userId="+userId;
+		
+		if (startDate==null || endDate==null) {
+			startDate="";
+			endDate="";
+		}
+		if (!startDate.isEmpty() && !endDate.isEmpty()) {
+			String appendStr = " AND t1.startTime between \""+ startDate + "\" AND \""+ endDate +"\"\n" + 
+					"AND t1.endTime between \""+ startDate +"\" AND \""+ endDate +"\"\n";
+			StringBuilder strbuilder = new StringBuilder();
+			strbuilder.append(sqlStmt);
+			strbuilder.append(appendStr);
+			sqlStmt = strbuilder.toString();
+		}
+		
 		String result = null;
         System.out.print(new Date().getTime());
-		System.out.println("getUserEvents/"+userId);
+		System.out.println("getUserEvents/"+userId+",start="+startDate+",end"+endDate);
 		try {
 			initDatabase();
 
@@ -193,20 +208,29 @@ public class DemoController {
 	}
 	
 	
-	@RequestMapping("/getEventsForPeriod")
+	@RequestMapping("/getEvents")
 	@CrossOrigin(origins ="*")
-	String getEventsForPeriod(@RequestParam("startDate") String startDate,@RequestParam("endDate") String endDate) {
-		String sqlStmt = "SELECT \n" + 
-				"t1.eventId, t1.eventName, t1.startTime, t1.endTime, count(t2.userId) AS numPax\n" + 
-				"FROM report.Events t1\n" + 
-				"JOIN report.EventRegistrations t2\n" + 
-				"WHERE t1.eventId=t2.eventId\n" + 
-				"AND t1.startTime between \""+ startDate + "\" AND \""+ endDate +"\"\n" + 
-				"AND t1.endTime between \""+ startDate +"\" AND \""+ endDate +"\"\n" +
-				"GROUP BY t1.eventId;";
+	String getEventsForPeriod(@RequestParam(value = "startDate", required=false) String startDate,
+			@RequestParam(value = "endDate", required=false) String endDate) {
+		
+		String sqlStmt = "SELECT *\n" + 
+				"FROM report.Events t1\n";
+		if (startDate==null || endDate==null) {
+			startDate="";
+			endDate="";
+		}
+		if (!startDate.isEmpty() && !endDate.isEmpty()) {
+			String appendStr = "WHERE t1.startTime between \""+ startDate + "\" AND \""+ endDate +"\"\n" + 
+					"AND t1.endTime between \""+ startDate +"\" AND \""+ endDate +"\"\n";
+			StringBuilder strbuilder = new StringBuilder();
+			strbuilder.append(sqlStmt);
+			strbuilder.append(appendStr);
+			sqlStmt = strbuilder.toString();
+		}
+		
 		String result = null;
         System.out.print(new Date().getTime());
-		System.out.println("getEventsForPeriod?start="+startDate+"&end="+endDate);
+		System.out.println("getEvents?start="+startDate+"&end="+endDate);
 		try {
 			initDatabase();
 
