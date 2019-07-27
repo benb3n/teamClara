@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -179,6 +181,37 @@ public class DemoController {
 		String result = null;
         System.out.print(new Date().getTime());
 		System.out.println("getOrgEvents/"+organisationId);
+		try {
+			initDatabase();
+
+
+			result = resultSetToJson(con, sqlStmt);
+            System.out.println("Pulled data:\n "+result);
+			if (result != null)
+				return result;
+
+			con.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return result; 
+	}
+	
+	
+	@RequestMapping("/getEventsForPeriod")
+	@CrossOrigin(origins ="*")
+	String getEventsForPeriod(@RequestParam("startDate") String startDate,@RequestParam("endDate") String endDate) {
+		String sqlStmt = "SELECT \n" + 
+				"t1.eventId, t1.eventName, t1.startTime, t1.endTime, count(t2.userId) AS numPax\n" + 
+				"FROM report.Events t1\n" + 
+				"JOIN report.EventRegistrations t2\n" + 
+				"WHERE t1.eventId=t2.eventId\n" + 
+				"AND t1.startTime between \""+ startDate + "\" AND \""+ endDate +"\"\n" + 
+				"AND t1.endTime between \""+ startDate +"\" AND \""+ endDate +"\"\n" +
+				"GROUP BY t1.eventId;";
+		String result = null;
+        System.out.print(new Date().getTime());
+		System.out.println("getEventsForPeriod?start="+startDate+"&end="+endDate);
 		try {
 			initDatabase();
 
