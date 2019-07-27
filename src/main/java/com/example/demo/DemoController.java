@@ -113,11 +113,11 @@ public class DemoController {
 	@RequestMapping("/getEventUsers/{eventId}")
 	@CrossOrigin(origins ="*")
 	String getEventUsers(@PathVariable("eventId") String eventId) {
-		String sqlStmt = "SELECT t3.nationality\n" + 
+		String sqlStmt = "SELECT t3.nationality, t3.gender, t3.birthDate, t3.region\n" + 
 				"	FROM report.Events t1\n" + 
 				"	JOIN report.EventRegistrations t2 ON t1.eventId=t2.eventId\n" + 
 				"	JOIN report.Accounts t3 ON t2.userId=t3.userId\n" + 
-				"	WHERE t1.eventId=1;\n"+eventId;
+				"	WHERE t1.eventId="+eventId;
 		String result = null;
 		System.out.println("starting");
 		try {
@@ -136,7 +136,58 @@ public class DemoController {
 		return result; 
 	}
 	
+	
+	@RequestMapping("/getEventFeedback/{eventId}")
+	@CrossOrigin(origins ="*")
+	String getEventFeedback(@PathVariable("eventId") String eventId) {
+		String sqlStmt = "SELECT userId, status, feedback\n" + 
+				"FROM report.EventRegistrations t1\n" + 
+				"WHERE t1.eventId="+eventId;
+		String result = null;
+		System.out.println("starting");
+		try {
+			initDatabase();
+			System.out.println("Pulled data");
 
+			result = resultSetToJson(con, sqlStmt);
+
+			if (result != null)
+				return result;
+
+			con.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return result; 
+	}
+
+	
+	@RequestMapping("/getOrgEvents/{organisationId}")
+	@CrossOrigin(origins ="*")
+	String getOrganisationEvents(@PathVariable("organisationId") String organisationId) {
+		String sqlStmt = "SELECT t2.orgName, t2.orgId, t1.eventName, \n" + 
+				"t1.eventDesc, t1.signupCount, t1.status, t1.startTime, t1.endTime\n" + 
+				"FROM report.Events t1\n" + 
+				"JOIN report.Organisations t2\n" + 
+				"ON t1.organiserId=t2.orgId\n" + 
+				"WHERE t1.organiserId="+organisationId;
+		String result = null;
+		System.out.println("starting");
+		try {
+			initDatabase();
+			System.out.println("Pulled data");
+
+			result = resultSetToJson(con, sqlStmt);
+
+			if (result != null)
+				return result;
+
+			con.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return result; 
+	}
 	
 	public static String resultSetToJson(Connection connection, String query) {
 		List<Map<String, Object>> listOfMaps = null;
