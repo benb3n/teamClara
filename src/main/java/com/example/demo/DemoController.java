@@ -27,7 +27,7 @@ public class DemoController {
 	             System.out.println("Pulled data");
 	            
 	             while (rs.next()) {
-	                 return "Read from database : " + rs.getString(1) + "  " + rs.getString(2) ;
+	                 return "Read from databasSSe : " + rs.getString(1) + "  " + rs.getString(2) ;
 	             }
 	             con.close();
 	         } catch (Exception e) {
